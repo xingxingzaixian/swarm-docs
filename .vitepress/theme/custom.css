@@ -1,0 +1,174 @@
+/* ============================================================================
+   蜂群文档站 · 视觉基线
+   ----------------------------------------------------------------------------
+   两条硬约束决定了这里的设计：
+
+   1. 不引入任何 Web 字体。读者在国内，Google Fonts 要么慢要么打不开；
+      而中文字体子集化后仍有数 MB，为了「好看一点点」赔上首屏时间不值得。
+      所以用系统栈：macOS 拿到苹方、Windows 拿到微软雅黑，两边都是原生字形。
+   2. 蓝色只用在小面积（按钮、链接、当前项），大面积留给中性的纸面。
+      产品的界面截图本身颜色很足，页面再抢色就变成两套视觉在打架。
+   ========================================================================== */
+
+:root {
+  --vp-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', sans-serif;
+  --vp-font-family-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    'Liberation Mono', monospace;
+
+  /* 品牌色抽自产品图标 build/appicon.png */
+  --sw-blue: #2b7cf6;
+  --sw-blue-dark: #1b5fd0;
+  --sw-green: #12b981;
+  --sw-ink: #1a2340;
+
+  /* 中性色带一点蓝，和品牌色同源；纯灰会让页面显得脏 */
+  --sw-paper: #fdfdff;
+  --sw-surface: #f5f7fc;
+  --sw-line: #e4e8f2;
+  --sw-text: #26314e;
+  --sw-text-2: #5b6684;
+
+  --vp-c-brand-1: var(--sw-blue-dark);
+  --vp-c-brand-2: var(--sw-blue);
+  --vp-c-brand-3: var(--sw-blue);
+  --vp-c-brand-soft: rgba(43, 124, 246, 0.12);
+
+  --vp-c-bg: var(--sw-paper);
+  --vp-c-bg-soft: var(--sw-surface);
+  --vp-c-bg-alt: var(--sw-surface);
+  --vp-c-divider: var(--sw-line);
+  --vp-c-border: var(--sw-line);
+  --vp-c-text-1: var(--sw-text);
+  --vp-c-text-2: var(--sw-text-2);
+
+  --vp-button-brand-bg: var(--sw-blue);
+  --vp-button-brand-hover-bg: var(--sw-blue-dark);
+  --vp-button-brand-active-bg: var(--sw-blue-dark);
+
+  --vp-code-line-height: 1.6;
+}
+
+.dark {
+  /* 深色模式不是浅色的反转：底色用带蓝的深灰，绝不纯黑 */
+  --sw-paper: #10162a;
+  --sw-surface: #161e36;
+  --sw-line: #26304c;
+  --sw-text: #e6eaf6;
+  --sw-text-2: #9aa5c2;
+
+  --vp-c-brand-1: #7fb0ff;
+  --vp-c-brand-2: #5b93f7;
+  --vp-c-brand-3: #5b93f7;
+
+  --vp-c-bg: var(--sw-paper);
+  --vp-c-bg-soft: var(--sw-surface);
+  --vp-c-bg-alt: var(--sw-surface);
+  --vp-c-divider: var(--sw-line);
+  --vp-c-border: var(--sw-line);
+  --vp-c-text-1: var(--sw-text);
+  --vp-c-text-2: var(--sw-text-2);
+}
+
+/* ---------------------------------------------------------------- 正文排版 */
+
+/* 默认内容宽度 688px 对「带界面的手册」太窄：截图会被压掉近 40% */
+@media (min-width: 960px) {
+  .VPDoc.has-aside .content-container {
+    max-width: 880px;
+  }
+}
+
+.vp-doc {
+  line-height: 1.72;
+}
+
+.vp-doc p,
+.vp-doc li {
+  text-wrap: pretty;
+}
+
+.vp-doc h1 {
+  letter-spacing: -0.015em;
+}
+
+.vp-doc h2 {
+  margin-top: 2.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--sw-line);
+  letter-spacing: -0.01em;
+}
+
+.vp-doc h3 {
+  margin-top: 1.9rem;
+}
+
+.vp-doc table {
+  display: table;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+
+.vp-doc tr:nth-child(2n) {
+  background: transparent;
+}
+
+.vp-doc th {
+  background: var(--sw-surface);
+  font-weight: 600;
+}
+
+.vp-doc table td,
+.vp-doc table th {
+  padding: 10px 14px;
+}
+
+/* ------------------------------------------------------------ 截图与放大 */
+
+.vp-doc a.shot {
+  display: block;
+  margin: 1.4rem 0;
+  border: 1px solid var(--sw-line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--sw-surface);
+  transition: border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vp-doc a.shot:hover {
+  border-color: var(--sw-blue);
+}
+
+.vp-doc a.shot img {
+  display: block;
+  margin: 0;
+  border-radius: 0;
+}
+
+/* 给图片加一句「可点开」的暗示，不额外占版面 */
+.vp-doc a.shot + em {
+  display: block;
+  margin-top: -1.1rem;
+  margin-bottom: 1.4rem;
+  font-size: 0.8125rem;
+  color: var(--sw-text-2);
+  font-style: normal;
+}
+
+/* ---------------------------------------------------------------- 交互态 */
+
+:focus-visible {
+  outline: 2px solid var(--sw-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
